@@ -10,6 +10,8 @@ function Login() {
     password: ""
   });
 
+  const BASE_URL = "https://student-grievence.onrender.com";
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -22,7 +24,7 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/login",
+        `${BASE_URL}/api/login`,
         form
       );
 

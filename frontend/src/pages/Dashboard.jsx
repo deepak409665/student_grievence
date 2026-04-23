@@ -17,6 +17,8 @@ function Dashboard() {
 
   const token = localStorage.getItem("token");
 
+  const BASE_URL = "https://student-grievence.onrender.com";
+
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -28,7 +30,7 @@ function Dashboard() {
   const fetchGrievances = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:5000/api/grievances",
+        `${BASE_URL}/api/grievances`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -54,7 +56,7 @@ function Dashboard() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/grievances",
+        `${BASE_URL}/api/grievances`,
         form,
         {
           headers: {
@@ -74,9 +76,7 @@ function Dashboard() {
       fetchGrievances();
 
     } catch (error) {
-      alert(
-        error.response?.data?.message || "Submission Failed"
-      );
+      alert(error.response?.data?.message || "Submission Failed");
     }
   };
 
@@ -88,7 +88,7 @@ function Dashboard() {
   const deleteGrievance = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/grievances/${id}`,
+        `${BASE_URL}/api/grievances/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -107,7 +107,7 @@ function Dashboard() {
   const searchGrievance = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/grievances/search?title=${search}`,
+        `${BASE_URL}/api/grievances/search?title=${search}`,
         {
           headers: {
             Authorization: `Bearer ${token}`
@@ -142,71 +142,31 @@ function Dashboard() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#f3f4f6",
-        padding: "30px"
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "750px",
-          margin: "auto",
-          backgroundColor: "#ffffff",
-          padding: "30px",
-          borderRadius: "14px",
-          boxShadow: "0 6px 18px rgba(0,0,0,0.08)"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-          }}
-        >
-          <h1 style={{ margin: 0 }}>Dashboard</h1>
-
-          <button
-            onClick={logout}
-            style={{
-              ...buttonStyle,
-              backgroundColor: "#ef4444",
-              color: "white"
-            }}
-          >
+    <div style={{ minHeight: "100vh", backgroundColor: "#f3f4f6", padding: "30px" }}>
+      <div style={{
+        maxWidth: "750px",
+        margin: "auto",
+        backgroundColor: "#ffffff",
+        padding: "30px",
+        borderRadius: "14px",
+        boxShadow: "0 6px 18px rgba(0,0,0,0.08)"
+      }}>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <h1>Dashboard</h1>
+          <button onClick={logout} style={{ ...buttonStyle, background: "red", color: "white" }}>
             Logout
           </button>
         </div>
 
-        <hr style={{ margin: "25px 0" }} />
+        <hr />
 
         <h2>Submit Grievance</h2>
 
         <form onSubmit={handleSubmit}>
-          <input
-            style={inputStyle}
-            name="title"
-            placeholder="Enter Title"
-            value={form.title}
-            onChange={handleChange}
-          />
+          <input style={inputStyle} name="title" placeholder="Enter Title" value={form.title} onChange={handleChange} />
+          <input style={inputStyle} name="description" placeholder="Enter Description" value={form.description} onChange={handleChange} />
 
-          <input
-            style={inputStyle}
-            name="description"
-            placeholder="Enter Description"
-            value={form.description}
-            onChange={handleChange}
-          />
-
-          <select
-            style={inputStyle}
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-          >
+          <select style={inputStyle} name="category" value={form.category} onChange={handleChange}>
             <option value="">Select Category</option>
             <option value="Academic">Academic</option>
             <option value="Hostel">Hostel</option>
@@ -214,91 +174,39 @@ function Dashboard() {
             <option value="Other">Other</option>
           </select>
 
-          <button
-            type="submit"
-            style={{
-              ...buttonStyle,
-              backgroundColor: "#2563eb",
-              color: "white",
-              marginTop: "15px"
-            }}
-          >
+          <button type="submit" style={{ ...buttonStyle, background: "#2563eb", color: "white", marginTop: "10px" }}>
             Submit
           </button>
         </form>
 
-        <hr style={{ margin: "30px 0" }} />
+        <hr />
 
-        <h2>Search Grievance</h2>
+        <input style={inputStyle} placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
 
-        <input
-          style={inputStyle}
-          placeholder="Search by title"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        <button onClick={searchGrievance} style={{ ...buttonStyle, background: "green", color: "white" }}>
+          Search
+        </button>
 
-        <div style={{ marginTop: "15px" }}>
-          <button
-            onClick={searchGrievance}
-            style={{
-              ...buttonStyle,
-              backgroundColor: "#10b981",
-              color: "white"
-            }}
-          >
-            Search
-          </button>
+        <button onClick={fetchGrievances} style={{ ...buttonStyle, background: "gray", color: "white" }}>
+          Reset
+        </button>
 
-          <button
-            onClick={fetchGrievances}
-            style={{
-              ...buttonStyle,
-              backgroundColor: "#6b7280",
-              color: "white"
-            }}
-          >
-            Reset
-          </button>
-        </div>
-
-        <hr style={{ margin: "30px 0" }} />
+        <hr />
 
         <h2>My Grievances</h2>
 
-        {grievances.length === 0 ? (
-          <p>No grievances found.</p>
-        ) : (
-          grievances.map((item) => (
-            <div
-              key={item._id}
-              style={{
-                border: "1px solid #e5e7eb",
-                padding: "18px",
-                borderRadius: "10px",
-                marginTop: "15px",
-                backgroundColor: "#fafafa"
-              }}
-            >
-              <h3 style={{ marginTop: 0 }}>{item.title}</h3>
-              <p><strong>Description:</strong> {item.description}</p>
-              <p><strong>Category:</strong> {item.category}</p>
-              <p><strong>Status:</strong> {item.status}</p>
+        {grievances.map((item) => (
+          <div key={item._id} style={{ border: "1px solid #ddd", padding: "10px", marginTop: "10px" }}>
+            <h3>{item.title}</h3>
+            <p>{item.description}</p>
+            <p>{item.category}</p>
+            <p>{item.status}</p>
 
-              <button
-                onClick={() => deleteGrievance(item._id)}
-                style={{
-                  ...buttonStyle,
-                  backgroundColor: "#dc2626",
-                  color: "white",
-                  marginTop: "10px"
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          ))
-        )}
+            <button onClick={() => deleteGrievance(item._id)} style={{ background: "red", color: "white" }}>
+              Delete
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

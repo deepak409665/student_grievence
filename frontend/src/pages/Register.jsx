@@ -11,6 +11,8 @@ function Register() {
     password: ""
   });
 
+  const BASE_URL = "https://student-grievence.onrender.com";
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -23,7 +25,7 @@ function Register() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/register",
+        `${BASE_URL}/api/register`,
         form
       );
 
